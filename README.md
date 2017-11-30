@@ -5,6 +5,6 @@
 You need to have at least python 2.7, and ffmpeg installed, and the following python modules:
 
 * futures
-* imagepy
+* moviepy
 * pyscreenshot
-* futures
+
