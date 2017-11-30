@@ -1,0 +1,3 @@
+moviepy=*
+futures=*
+pyscreenshot=*
