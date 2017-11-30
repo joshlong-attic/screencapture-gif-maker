@@ -8,4 +8,4 @@ def after_install(options, home_dir):
     subprocess.call([join(home_dir, 'bin', 'easy_install'),
                      'futures moviepy pyscreenshot'])
 """))
-f = open('bootstrap.py', 'w').write(output)
+f = open('virtualenv.py', 'w').write(output)
