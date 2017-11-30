@@ -1,23 +1,29 @@
 #!/usr/bin/env python
 
 import os
-import time
 import threading
+import time
+
 import concurrent.futures
 import moviepy.video.io.ImageSequenceClip as isc
 import pyscreenshot as screen
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='(%(threadName)-9s) %(message)s', )
+
+
 # TODO ensure that all threadsd finish BEFORE #transcode is called. research http://effbot.org/zone/thread-synchronization.htm and https://stackoverflow.com/questions/10236947/does-python-have-a-similar-control-mechanism-to-javas-countdownlatch/24796823#24796823
 
-class Capture(object):
+class ScreenRecorder(object):
     DEFAULT_FPS = 30
 
     def __init__(
             self,
             root_dir,
             fps=DEFAULT_FPS,
-            executor=concurrent.futures.ThreadPoolExecutor(max_workers=4),
+            executor=concurrent.futures.ThreadPoolExecutor(max_workers=2 * 4),
             should_continue=lambda ctx: ctx['frame'] < 30):
-        super(Capture, self).__init__()
+        super(ScreenRecorder, self).__init__()
         self.executor = executor
         self.root_dir = root_dir
         self.fps = fps
@@ -27,10 +33,10 @@ class Capture(object):
         if not os.path.exists(self.root_dir):
             os.makedirs(self.root_dir)
 
-        assert os.path.exists(
-            self.root_dir), 'the directory %s must exist.' % self.root_dir
+        assert os.path.exists(self.root_dir), 'the directory %s must exist.' % self.root_dir
 
-    def loop(self):
+    def record(self, output_file):
+
 
         frame_ctr = 0
 
@@ -43,17 +49,16 @@ class Capture(object):
             frame_ctr += 1
             time.sleep(self.interval)
 
-    def transcode(self):
-        # todo this MUST run only after all the submitted capture threads finish
         files = [os.path.join(self.root_dir, f) for f in os.listdir(self.root_dir) if f.endswith('.png')]
         clip = isc.ImageSequenceClip(files, fps=30)
-        clip.write_gif(os.path.join(self.root_dir, '../out.gif'))
+        clip.write_gif(output_file)
 
 
 if __name__ == '__main__':
-    ss_dir = os.path.join(os.environ['HOME'], 'Desktop', 'ss')
+    tmp_dir = os.path.join(os.environ['HOME'], 'Desktop', 'ss')
+    gif = os.path.join(tmp_dir, '../out.gif')
 
-    capture = Capture(ss_dir)
-    capture.loop()
-    capture.transcode()
+    capture = ScreenRecorder(tmp_dir)
+    capture.record(gif)
+
     print 'finished!'
