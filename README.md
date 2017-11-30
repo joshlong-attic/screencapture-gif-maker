@@ -8,3 +8,13 @@ You need to have at least python 2.7, and ffmpeg installed, and the following py
 * moviepy
 * pyscreenshot
 
+###CAVEATS
+
+macOS High Sierra changes the behaviour of the fork syscall such that calls to Objective-C APIs in forked processes are treated as errors.
+
+To alleviate, run before executing:
+
+```
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+```
+
