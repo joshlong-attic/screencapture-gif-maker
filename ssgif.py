@@ -6,7 +6,7 @@ import threading
 import concurrent.futures
 import moviepy.video.io.ImageSequenceClip as isc
 import pyscreenshot as screen
-
+# TODO ensure that all threadsd finish BEFORE #transcode is called. research http://effbot.org/zone/thread-synchronization.htm and https://stackoverflow.com/questions/10236947/does-python-have-a-similar-control-mechanism-to-javas-countdownlatch/24796823#24796823
 
 class Capture(object):
     DEFAULT_FPS = 30
